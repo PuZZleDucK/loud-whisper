@@ -3,6 +3,7 @@ browser -> rails -> wisper -> graphs
 
 ## browser
 [x] Get audio (via js lib or gem?)
+ - https://stackoverflow.com/questions/27846392/access-microphone-from-a-browser-javascript
 [ ] Forward to rails controller
 [ ] Rails controller creates a background job with a link back to the chat
 [ ] Background job takes the audio chunk and passes it to wisper getting a transcript back
