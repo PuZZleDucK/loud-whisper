@@ -17,6 +17,9 @@ class ChatsController < ApplicationController
 
   # GET /chats/1/edit
   def edit
+    # puts "data from js call: #{params[:data]}"
+    data = params[:data].split(",")
+    puts "data from js call: #{data[1..5]}  - length: #{data.length}"
   end
 
   # POST /chats or /chats.json
@@ -65,6 +68,6 @@ class ChatsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def chat_params
-      params.fetch(:chat, {})
+      params.fetch(:chat, :data, {})
     end
 end

@@ -1,6 +1,7 @@
-// print to console only after page load
 window.onload = function() {
-  console.log("DOM fully loaded and parsed");
+  var url = window.location.href;
+  var id = url.substring(url.lastIndexOf('/') + 1);
+  console.log("Loaded chat id: " + id);
 }
 
 var webaudio_tooling_obj = function () {
@@ -46,8 +47,16 @@ var webaudio_tooling_obj = function () {
       var i, N, inp, microphone_output_buffer;
       microphone_output_buffer = event.inputBuffer.getChannelData(0); // just mono - 1 channel for now
       // microphone_output_buffer  <-- this buffer contains current gulp of data size BUFF_SIZE
-      show_some_data(microphone_output_buffer, 5, "from getChannelData");
-  }
+      // show_some_data(microphone_output_buffer, 5, "from getChannelData");
+
+      var url = window.location.href;
+      var id = url.substring(url.lastIndexOf('/') + 1);
+      $.ajax({
+        url : "/chats/" + id + "/edit",
+        type : "get",
+        data : { data: '"' + given_typed_array + '"' }
+      });
+    }
 
   function start_microphone(stream){
     gain_node = audioContext.createGain();
