@@ -1,11 +1,16 @@
 # loud-whisper
 browser -> rails -> wisper -> graphs
 
-## browser
+## Todo Checklist
 [x] Get audio (via js lib or gem?)
- - https://stackoverflow.com/questions/27846392/access-microphone-from-a-browser-javascript
-[ ] Forward to rails controller
+  - https://stackoverflow.com/questions/27846392/access-microphone-from-a-browser-javascript
+[x] Forward to rails controller
+[x] Cache chunks of data and trigger file creation
+[ ] write file to wav
 [ ] Rails controller creates a background job with a link back to the chat
+[ ] test that we can send audio to wisper from the job
+  - setup and call whisper
+    - pip install -U openai-whisper
 [ ] Background job takes the audio chunk and passes it to wisper getting a transcript back
 [ ] Concat transcript to chat log
 [ ] Discard audio chunk

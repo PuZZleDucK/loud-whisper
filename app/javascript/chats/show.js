@@ -46,15 +46,13 @@ var webaudio_tooling_obj = function () {
   function process_microphone_buffer(event) { // invoked by event loop
       var i, N, inp, microphone_output_buffer;
       microphone_output_buffer = event.inputBuffer.getChannelData(0); // just mono - 1 channel for now
-      // microphone_output_buffer  <-- this buffer contains current gulp of data size BUFF_SIZE
-      // show_some_data(microphone_output_buffer, 5, "from getChannelData");
 
       var url = window.location.href;
       var id = url.substring(url.lastIndexOf('/') + 1);
       $.ajax({
         url : "/chats/" + id + "/edit",
-        type : "get",
-        data : { data: '"' + given_typed_array + '"' }
+        type : "post",
+        data : { data: '"' + microphone_output_buffer.join(',') + '"' }
       });
     }
 
@@ -93,9 +91,9 @@ var webaudio_tooling_obj = function () {
       analyserNode.getByteFrequencyData(array);
 
       // draw the spectrogram
-      if (microphone_stream.playbackState == microphone_stream.PLAYING_STATE) {
-          show_some_data(array, 5, "from fft");
-      }
+      // if (microphone_stream.playbackState == microphone_stream.PLAYING_STATE) {
+      //     show_some_data(array, 5, "from fft");
+      // }
     };
   }
 }(); //  webaudio_tooling_obj = function()

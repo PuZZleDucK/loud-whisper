@@ -1,6 +1,11 @@
 class ChatsController < ApplicationController
   before_action :set_chat, only: %i[ show edit update destroy ]
 
+  @@audio_sample_count = 10
+  @@current_audio_sample = 0
+  @@audio_data_a = []
+  # @@audio_data_b = []
+
   # GET /chats or /chats.json
   def index
     @chats = Chat.all
@@ -19,7 +24,42 @@ class ChatsController < ApplicationController
   def edit
     # puts "data from js call: #{params[:data]}"
     data = params[:data].split(",")
-    puts "data from js call: #{data[1..5]}  - length: #{data.length}"
+    # puts "data from js call: #{data[1..5]}  - length: #{data.length}"
+    # cache ~10 samples of audio data before writing to file and calling background job
+    if @@current_audio_sample < @@audio_sample_count
+      @@audio_data_a << data
+      @@current_audio_sample += 1
+      # puts "\n\n\n\n\n\n\n\n\nadding #{data.length} samples to data (#{@@audio_data_a.length} accumulated samples)\n\n\n\n\n\n\n"
+    else
+      puts "\n\n\n\n\n\n\n\n\nwriting file and creating job (#{@@audio_data_a.flatten.length} samples)\n\n\n\n\n\n\n"
+      # write file and create job
+      audio_file_path = Rails.root.join('storage', 'audio-test.wav')
+      format = WavFile::Format.new(nil)
+      format.channel = 1
+      format.hz = 48000
+      format.bytePerSec = 48000
+      format.blockSize = 1
+      format.bitPerSample = 16
+      File.open(audio_file_path, 'wb') do |f|
+        # WavFile::write(f, format, @@audio_data_a.flatten)
+
+
+        # f.write @@audio_data_a.flatten
+        # output_bytes = IOUtils.toByteArray(@@audio_data_a.flatten)
+        # output_format = AudioFileFormat.Type.WAVE # AudioFormat(48000,16,2,true,true)
+        # AudioSystem.write(output_bytes, output_format,output_bytes.length/4)
+
+      end
+      @@audio_data_a = []
+      @@current_audio_sample = 0
+    end
+
+
+
+    # call wisper with file param
+    # result = `whisper #{audio_file_path} --model medium`
+    # puts "result: #{result}"
+
   end
 
   # POST /chats or /chats.json
@@ -68,6 +108,8 @@ class ChatsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def chat_params
-      params.fetch(:chat, :data, {})
+      params.permit(:chat, :data)
+      # binding.pry
+      # params.fetch(:chat, :data, {})
     end
 end
